@@ -127,8 +127,8 @@ stages:
           - task: AzureRmWebAppDeployment@4
             inputs:
               ConnectionType: 'AzureRM'
-              azureSubscription: 'Project2PAC WebApp Connection'
+              azureSubscription: 'Azure subscription (Pay As You Go (Hopefully)(0898d619-ccf0-4843-99d4-f17ed331e0f4)'
               appType: 'webApp'
-              WebAppName: '2PAC-WebApp'
+              WebAppName: '2PACWebApp'
               packageForLinux: '$(Pipeline.Workspace)/app'
             displayName: Deploy to Azure App service
