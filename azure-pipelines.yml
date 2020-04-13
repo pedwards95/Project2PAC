@@ -130,6 +130,5 @@ stages:
               azureSubscription: 'Project2PAC WebApp Connection'
               appType: 'webApp'
               WebAppName: '2PAC-WebApp'
-              VirtualApplication: '2PAC-WebApp'
               packageForLinux: '$(Pipeline.Workspace)/app'
             displayName: Deploy to Azure App service
