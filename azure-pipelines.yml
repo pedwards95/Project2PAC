@@ -1,0 +1,135 @@
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    exclude:
+    - README.md
+
+pr:
+- master
+
+stages:
+
+- stage: 'build'
+  displayName: build
+
+  variables:
+    sdkVersion: 3.1.x
+    solutionPath: .
+    buildConfiguration: Release
+
+  jobs:
+
+  - job: build
+    displayName: build
+
+    pool:
+      vmImage: ubuntu-latest
+
+    steps:
+
+    - task: UseDotNet@2
+      inputs:
+        packageType: sdk
+        version: $(sdkVersion)
+      displayName: dotnet $(sdkVersion)
+
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: publish
+        publishWebProjects: true
+        arguments:
+          --configuration $(buildConfiguration)
+          --output $(Build.ArtifactStagingDirectory)/publish
+        modifyOutputPath: false
+        zipAfterPublish: false
+      displayName: dotnet publish
+
+    - publish: $(Build.ArtifactStagingDirectory)/publish
+      artifact: app
+      displayName: artifact publish app
+
+  - job: test
+    displayName: test
+
+    pool:
+      vmImage: ubuntu-latest
+
+    steps:
+
+    - task: SonarCloudPrepare@1
+      inputs:
+        SonarCloud: 'Project2PAC_Github'
+        organization: 'project2pac'
+        scannerMode: 'MSBuild'
+        projectKey: 'pedwards95_Project2PAC'
+        projectName: 'Project2PAC'
+        extraProperties: 'sonar.exclusions=**/lib/** sonar.exclusions=**/bin/** sonar.exclusions=**/obj/**'
+      displayName: sonarcloud analysis prepare
+
+    - script: dotnet build $(solutionPath)
+        --configuration $(buildConfiguration)
+      displayName: dotnet build
+
+    - script: dotnet test $(solutionPath)
+        --configuration $(buildConfiguration)
+        --collect "XPlat Code Coverage"
+        --logger trx
+        --no-build
+        --results-directory $(Common.TestResultsDirectory)
+      displayName: dotnet test
+
+    - task: SonarCloudAnalyze@1
+      displayName: sonarcloud analysis run
+
+    - task: PublishTestResults@2
+      condition: succeededOrFailed()
+      inputs:
+        testRunner: VSTest
+        testResultsFiles: $(Common.TestResultsDirectory)/*.trx
+      displayName: Test results build publish
+
+    - task: PublishCodeCoverageResults@1
+      condition: succeededOrFailed()
+      inputs:
+        codeCoverageTool: Cobertura
+        summaryFileLocation: $(Common.TestResultsDirectory)/*/coverage.cobertura.xml' 
+      displayName: code coverage build publish
+
+    - task: SonarCloudPublish@1
+      condition: succeededOrFailed()
+      displayName: sonarcloud results publish
+
+- stage: deploy
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  dependsOn: build
+
+  jobs:
+
+  - deployment: deploy_dev
+    displayName: deploy dev
+
+    pool:
+      vmImage: ubuntu-latest
+    
+    environment: dev
+
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+
+          - download: current
+            artifact: app
+            displayName: artifact download app
+
+          - task: AzureRmWebAppDeployment@4
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: 'Project2PAC WebApp Connection'
+              appType: 'webApp'
+              WebAppName: '2PAC-WebApp'
+              VirtualApplication: '2PAC-WebApp'
+              packageForLinux: '$(Pipeline.Workspace)/app'
+            displayName: Deploy to Azure App service
