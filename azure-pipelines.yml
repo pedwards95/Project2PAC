@@ -54,7 +54,7 @@ stages:
     displayName: test
 
     pool:
-      vmImage: ubuntu-latest
+      vmImage: windows-latest
 
     steps:
 
