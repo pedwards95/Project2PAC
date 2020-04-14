@@ -77,12 +77,12 @@ stages:
 
     - script: dotnet test $(solutionPath)
         --configuration $(buildConfiguration)
-        --collect "XPlat Code Coverage"
-        --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
-        --no-build
         --collect "Code coverage"
+        --logger trx 
+        --no-build
       displayName: dotnet test
 
+# --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
     - task: PublishTestResults@2
       condition: succeededOrFailed()
       inputs:
