@@ -75,7 +75,7 @@ stages:
     - script: dotnet test $(solutionPath)
         --configuration $(buildConfiguration)
         --collect "XPlat Code Coverage"
-        --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura  2PAC.Tests/2PAC.Test.csproj
+        --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
         --no-build
         --results-directory $(Common.TestResultsDirectory)
         --collect "Code coverage"
