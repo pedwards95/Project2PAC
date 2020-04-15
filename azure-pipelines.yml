@@ -102,8 +102,8 @@ stages:
     - task: PublishCodeCoverageResults@1
       condition: succeededOrFailed()
       inputs:
-        codeCoverageTool: Cobertura
-        summaryFileLocation: $(Build.SourcesDirectory)/coverlet/reports\Cobertura.xml' 
+        codeCoverageTool: 'Cobertura'
+        summaryFileLocation: '$(solutionPath)/**/coverage.cobertura.xml'
       displayName: code coverage build publish
 
     - task: SonarCloudPublish@1
