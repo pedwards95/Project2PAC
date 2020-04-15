@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>_2PAC.WebApp</RootNamespace>
+    <UserSecretsId>2016151a-72b7-4c64-b50c-031856b12e0e</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
