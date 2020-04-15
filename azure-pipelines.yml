@@ -78,11 +78,10 @@ stages:
     - script: dotnet test $(solutionPath)
         --configuration $(buildConfiguration)
         --collect "Code coverage"
-        --logger trx 
+        --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
         --no-build
       displayName: dotnet test
 
-# --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
     - task: PublishTestResults@2
       condition: succeededOrFailed()
       inputs:
