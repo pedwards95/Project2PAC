@@ -25,4 +25,8 @@
     <ProjectReference Include="..\2PAC.Domain\2PAC.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Repositories\" />
+  </ItemGroup>
+
 </Project>
