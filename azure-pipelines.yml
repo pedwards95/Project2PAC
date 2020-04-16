@@ -11,8 +11,7 @@ pr:
 
 stages:
 
-- stage: 'build'
-  displayName: build
+- stage: build
 
   variables:
     sdkVersion: 3.1.x
@@ -22,7 +21,6 @@ stages:
   jobs:
 
   - job: build
-    displayName: build
 
     pool:
       vmImage: ubuntu-latest
@@ -51,12 +49,19 @@ stages:
       displayName: artifact publish app
 
   - job: test
-    displayName: test
 
     pool:
-      vmImage: windows-latest
+      vmImage: ubuntu-latest
 
     steps:
+
+    # disabled because of bug in SonarCloudPrepare task
+    - task: UseDotNet@2
+      enabled: false
+      inputs:
+        packageType: sdk
+        version: $(sdkVersion)
+      displayName: dotnet $(sdkVersion)
 
     - task: SonarCloudPrepare@1
       inputs:
@@ -65,50 +70,44 @@ stages:
         scannerMode: 'MSBuild'
         projectKey: 'pedwards95_Project2PAC'
         projectName: 'Project2PAC'
-        extraProperties: 'sonar.exclusions=**/lib/** sonar.exclusions=**/bin/** sonar.exclusions=**/obj/**'
+        extraProperties: |
+          sonar.exclusions=**/lib/**
+          sonar.cs.opencover.reportsPaths=$(Common.TestResultsDirectory)/*/coverage.opencover.xml
       displayName: sonarcloud analysis prepare
 
     - script: dotnet build $(solutionPath)
         --configuration $(buildConfiguration)
       displayName: dotnet build
 
-    - task: SonarCloudAnalyze@1
-      displayName: sonarcloud analysis run
-
     - script: dotnet test $(solutionPath)
         --configuration $(buildConfiguration)
-        --collect "Code coverage"
-        --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
+        --logger trx
         --no-build
+        --results-directory $(Common.TestResultsDirectory)
+        --settings coverlet.runsettings
+      continueOnError: true
       displayName: dotnet test
+
+    - task: SonarCloudAnalyze@1
+      displayName: sonarcloud analysis run
 
     - task: PublishTestResults@2
       condition: succeededOrFailed()
       inputs:
         testRunner: VSTest
-        testResultsFiles: '**/*.trx'
-      displayName: Test results build publish
-
-    - task: DotNetCoreCLI@2
-      inputs:
-        command: custom
-        custom: tool
-        arguments: install --tool-path . dotnet-reportgenerator-globaltool
-      displayName: Install ReportGenerator tool
-
-    - script: reportgenerator -reports:$(solutionPath)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura"
-      displayName: Create reports
+        testResultsFiles: $(Common.TestResultsDirectory)/*.trx
+      displayName: test results build publish
 
     - task: PublishCodeCoverageResults@1
       condition: succeededOrFailed()
       inputs:
-        codeCoverageTool: 'Cobertura'
-        summaryFileLocation: $(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml
+        codeCoverageTool: Cobertura
+        summaryFileLocation: $(Common.TestResultsDirectory)/*/coverage.cobertura.xml
       displayName: code coverage build publish
 
     - task: SonarCloudPublish@1
       condition: succeededOrFailed()
-      displayName: sonarcloud results publish
+      displayName: sonarcloud results build publish
 
 - stage: deploy
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
@@ -117,11 +116,10 @@ stages:
   jobs:
 
   - deployment: deploy_dev
-    displayName: deploy dev
 
     pool:
       vmImage: ubuntu-latest
-    
+
     environment: dev
 
     strategy:
@@ -140,4 +138,4 @@ stages:
               appType: 'webApp'
               WebAppName: '2PACWebApp'
               packageForLinux: '$(Pipeline.Workspace)/app'
-            displayName: Deploy to Azure App service
+            displayName: azure app service deploy
