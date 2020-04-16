@@ -2,7 +2,7 @@
 
 namespace _2PAC.DataAccess
 {
-    public class Class1
+    public class Mapper
     {
     }
 }
