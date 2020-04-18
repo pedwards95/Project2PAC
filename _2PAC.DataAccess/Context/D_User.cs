@@ -15,6 +15,7 @@ namespace _2PAC.DataAccess.Context
         public string Username {get; set;}
         public string Password {get; set;}
         public string Description {get; set;}
+        public bool Admin {get; set;}
 
         public virtual ICollection<D_Score> Scores {get; set;}
         public virtual ICollection<D_Review> Reviews {get; set;}

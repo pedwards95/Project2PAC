@@ -27,9 +27,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\2PAC.DataAccess\2PAC.DataAccess.csproj" />
-    <ProjectReference Include="..\2PAC.Domain\2PAC.Domain.csproj" />
-    <ProjectReference Include="..\2PAC.WebApp\2PAC.WebApp.csproj" />
+    <ProjectReference Include="..\_2PAC.DataAccess\_2PAC.DataAccess.csproj" />
+    <ProjectReference Include="..\_2PAC.Domain\_2PAC.Domain.csproj" />
+    <ProjectReference Include="..\_2PAC.WebApp\_2PAC.WebApp.csproj" />
   </ItemGroup>
 
 </Project>
