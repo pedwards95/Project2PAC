@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\2PAC.DataAccess\2PAC.DataAccess.csproj" />
+    <ProjectReference Include="..\_2PAC.DataAccess\_2PAC.DataAccess.csproj" />
   </ItemGroup>
 
 

@@ -31,7 +31,8 @@ namespace _2PAC.DataAccess.Context
                     FirstName = "admin",
                     LastName = "admin",
                     Username = "admin",
-                    Password = "admin"
+                    Password = "admin",
+                    Admin = true
                 }
             );
             modelBuilder.Entity<D_Game>().HasData(

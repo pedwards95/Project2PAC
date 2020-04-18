@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using _2PAC.DataAccess.Context;
 
 namespace _2PAC.DataAccess.Migrations
 {
     [DbContext(typeof(_2PACdbContext))]
-    partial class _2PACdbContextModelSnapshot : ModelSnapshot
+    [Migration("20200418164321_addadminvalue")]
+    partial class addadminvalue
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -196,6 +198,9 @@ namespace _2PAC.DataAccess.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<bool>("Admin")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -230,6 +235,7 @@ namespace _2PAC.DataAccess.Migrations
                         new
                         {
                             UserId = 1,
+                            Admin = true,
                             FirstName = "admin",
                             LastName = "admin",
                             Password = "admin",

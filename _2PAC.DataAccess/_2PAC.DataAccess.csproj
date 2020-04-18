@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\2PAC.Domain\2PAC.Domain.csproj" />
+    <ProjectReference Include="..\_2PAC.Domain\_2PAC.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>

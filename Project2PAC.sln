@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29926.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "2PAC.WebApp", "2PAC.WebApp\2PAC.WebApp.csproj", "{FF9C3E49-642E-47D6-B3A5-161CD9494858}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_2PAC.WebApp", "_2PAC.WebApp\_2PAC.WebApp.csproj", "{FF9C3E49-642E-47D6-B3A5-161CD9494858}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2PAC.Tests", "2PAC.Tests\2PAC.Tests.csproj", "{B6448D47-E2C0-4889-9587-B04E2493CC8A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_2PAC.Tests", "_2PAC.Tests\_2PAC.Tests.csproj", "{B6448D47-E2C0-4889-9587-B04E2493CC8A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2PAC.Domain", "2PAC.Domain\2PAC.Domain.csproj", "{C52BE354-A5A2-4772-87AE-6BF859001A2B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_2PAC.Domain", "_2PAC.Domain\_2PAC.Domain.csproj", "{C52BE354-A5A2-4772-87AE-6BF859001A2B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2PAC.DataAccess", "2PAC.DataAccess\2PAC.DataAccess.csproj", "{477D4134-D7BA-46DD-9164-50FDD6A3EEB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_2PAC.DataAccess", "_2PAC.DataAccess\_2PAC.DataAccess.csproj", "{477D4134-D7BA-46DD-9164-50FDD6A3EEB9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
