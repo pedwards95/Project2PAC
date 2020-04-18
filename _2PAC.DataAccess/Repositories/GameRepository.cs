@@ -1,7 +1,100 @@
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
+using _2PAC.DataAccess.Context;
+using _2PAC.DataAccess.Logic;
+using _2PAC.Domain.Interfaces;
+using _2PAC.Domain.LogicModel;
+
 namespace _2PAC.DataAccess.Repositories
 {
-    public class GameRepository
+    public class GameRepository : IGameRepository
     {
-        
+        private readonly _2PACdbContext _dbContext;
+        private readonly ILogger<GameRepository> _logger;
+
+        public GameRepository( _2PACdbContext dbContext, ILogger<GameRepository> logger)
+        {
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
+// ! CLASS SPECIFIC
+        /// <summary> Fetches all games.
+        /// <returns> All games. </returns>
+        /// </summary>
+        public List<L_Game> GetAllGames()
+        {
+            _logger.LogInformation($"Retrieving all games.");
+            List<D_Game> returnGames = _dbContext.Games.ToList();
+            return returnGames.Select(Mapper.MapGame).ToList();
+        }
+        /// <summary> Fetches one game related to its id.
+        /// <param name="gameId"> int (game id) </param>
+        /// <returns> A single game related to input id </returns>
+        /// </summary>
+        public L_Game GetGameById(int gameId)
+        {
+            _logger.LogInformation($"Retrieving game with id: {gameId}");
+            D_Game returnGame = _dbContext.Games
+                .First(p => p.GameId == gameId);
+            return Mapper.MapGame(returnGame);
+        }
+        /// <summary> Adds a new game to the database.
+        /// <param name="inputGame"> object L_Game (name of object) - This is a logic object of type game. </param>
+        /// <returns> void </returns>
+        /// </summary>
+        public void AddGame(L_Game inputGame)
+        {
+            if (inputGame.GameId != 0)
+            {
+                _logger.LogWarning($"Game to be added has an ID ({inputGame.GameId}) already!");
+                throw new ArgumentException("Id already exists when trying to add a new game!",$"{inputGame.GameId}");
+            }
+
+            _logger.LogInformation("Adding game.");
+
+            D_Game entity = Mapper.UnMapGame(inputGame);
+            entity.GameId = 0;
+            _dbContext.Add(entity);
+        }
+        /// <summary> Deletes one game related to a game id.
+        /// <param name="gameId"> int (game id) </param>
+        /// <returns> void </returns>
+        /// </summary>
+        public void DeleteGameById(int gameId)
+        {
+            _logger.LogInformation($"Deleting game with ID {gameId}");
+            D_Game entity = _dbContext.Games.Find(gameId);
+            if (entity == null)
+            {
+                _logger.LogInformation($"Game ID {gameId} not found to delete! : Returning.");
+                return;
+            }
+            _dbContext.Remove(entity);
+        }
+        /// <summary> Changes all game related to a particular existing game.
+        /// <param name="inputGame"> object L_Game (name of object) - This is a logic object of type game. </param>
+        /// <returns> void </returns>
+        /// </summary>
+        public void UpdateGame(L_Game inputGame)
+        {
+            _logger.LogInformation($"Updating game with ID {inputGame.GameId}");
+            D_Game currentEntity = _dbContext.Games.Find(inputGame.GameId);
+            D_Game newEntity = Mapper.UnMapGame(inputGame);
+
+            _dbContext.Entry(currentEntity).CurrentValues.SetValues(newEntity);
+        }
+// ! RELATED TO OTHER CLASSES
+
+// ! GENERAL COMMANDS
+        /// <summary> Commit changes in the selected repository and related database.
+        /// <returns> void </returns>
+        /// </summary>
+        public void Save()
+        {
+            _logger.LogInformation("Saving changes to the database");
+            _dbContext.SaveChanges();
+        }
     }
 }
