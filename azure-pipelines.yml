@@ -51,7 +51,7 @@ stages:
   - job: test
 
     pool:
-      vmImage: ubuntu-latest
+      vmImage: windows-latest
 
     steps:
 
