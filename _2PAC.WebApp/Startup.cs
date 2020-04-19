@@ -11,8 +11,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using _2PAC.DataAccess.Context;
+using _2PAC.Domain.Interfaces;
+using _2PAC.DataAccess.Repositories;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 
-
+[assembly: ApiController]
 namespace _2PAC.WebApp
 {
     public class Startup
@@ -28,7 +33,30 @@ namespace _2PAC.WebApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<_2PACdbContext>(p => p.UseSqlServer(Configuration.GetConnectionString("myconn")));
-            services.AddControllers();
+
+            services.AddScoped<IUserRepository, UserRepository>();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Game Hub API", Version = "v1" });
+            });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowLocalAndAppServiceAngular", builder => builder
+                    .WithOrigins(
+                        "http://localhost:5001",
+                        "https://2pacwebapp.azurewebsites.net")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader());
+            });
+
+            services.AddControllers(options =>
+            {
+                options.ReturnHttpNotAcceptable = true;
+                // remove the default text/plain string formatter to clean up the OpenAPI document
+                options.OutputFormatters.RemoveType<StringOutputFormatter>();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -38,6 +66,15 @@ namespace _2PAC.WebApp
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors("AllowLocalAndAppServiceAngular");
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Game Hub API V1");
+            });
 
             app.UseHttpsRedirection();
 
@@ -52,3 +89,4 @@ namespace _2PAC.WebApp
         }
     }
 }
+
