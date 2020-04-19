@@ -32,6 +32,8 @@ namespace _2PAC.WebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApplicationInsightsTelemetry();
+
             services.AddDbContext<_2PACdbContext>(p => p.UseSqlServer(Configuration.GetConnectionString("myconn")));
 
             services.AddScoped<IUserRepository, UserRepository>();
@@ -56,6 +58,7 @@ namespace _2PAC.WebApp
                 options.ReturnHttpNotAcceptable = true;
                 // remove the default text/plain string formatter to clean up the OpenAPI document
                 options.OutputFormatters.RemoveType<StringOutputFormatter>();
+                options.SuppressAsyncSuffixInActionNames = false;
             });
         }
 
