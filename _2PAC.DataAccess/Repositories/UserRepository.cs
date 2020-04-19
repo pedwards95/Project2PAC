@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using _2PAC.DataAccess.Context;
 using _2PAC.DataAccess.Logic;
@@ -23,21 +25,25 @@ namespace _2PAC.DataAccess.Repositories
         /// <summary> Fetches all users.
         /// <returns> All users. </returns>
         /// </summary>
-        public List<L_User> GetAllUsers()
+        public async Task<List<L_User>> GetAllUsers()
         {
             _logger.LogInformation($"Retrieving all users.");
-            List<D_User> returnUsers = _dbContext.Users.ToList();
-            return returnUsers.Select(Mapper.MapUser).ToList();
+            IQueryable<D_User> returnUsers = _dbContext.Users
+                .Include(p => p.Scores)
+                .Include(p => p.Reviews)
+                .ThenInclude(p => p.Game);
+            List<D_User> users = await returnUsers.ToListAsync();
+            return users.Select(Mapper.MapUser).ToList();
         }
         /// <summary> Fetches one user related to its id.
         /// <param name="userId"> int (user id) </param>
         /// <returns> A single user related to input id </returns>
         /// </summary>
-        public L_User GetUserById(int userId)
+        public async Task<L_User> GetUserById(int userId)
         {
             _logger.LogInformation($"Retrieving user with id: {userId}");
-            D_User returnUser = _dbContext.Users
-                .First(p => p.UserId == userId);
+            D_User returnUser = await _dbContext.Users
+                .FirstOrDefaultAsync(p => p.UserId == userId);
             return Mapper.MapUser(returnUser);
         }
         /// <summary> Adds a new user to the database.
@@ -62,10 +68,10 @@ namespace _2PAC.DataAccess.Repositories
         /// <param name="userId"> int (user id) </param>
         /// <returns> void </returns>
         /// </summary>
-        public void DeleteUserById(int userId)
+        public async Task DeleteUserById(int userId)
         {
             _logger.LogInformation($"Deleting user with ID {userId}");
-            D_User entity = _dbContext.Users.Find(userId);
+            D_User entity = await _dbContext.Users.FindAsync(userId);
             if (entity == null)
             {
                 _logger.LogInformation($"Game ID {userId} not found to delete! : Returning.");
@@ -77,10 +83,10 @@ namespace _2PAC.DataAccess.Repositories
         /// <param name="inputUser"> object L_User (name of object) - This is a logic object of type user. </param>
         /// <returns> void </returns>
         /// </summary>
-        public void UpdateUser(L_User inputUser)
+        public async Task UpdateUser(L_User inputUser)
         {
             _logger.LogInformation($"Updating user with ID {inputUser.UserId}");
-            D_User currentEntity = _dbContext.Users.Find(inputUser.UserId);
+            D_User currentEntity = await _dbContext.Users.FindAsync(inputUser.UserId);
             D_User newEntity = Mapper.UnMapUser(inputUser);
 
             _dbContext.Entry(currentEntity).CurrentValues.SetValues(newEntity);
