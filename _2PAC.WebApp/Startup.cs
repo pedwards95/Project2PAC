@@ -32,7 +32,6 @@ namespace _2PAC.WebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddApplicationInsightsTelemetry();
 
             services.AddDbContext<_2PACdbContext>(p => p.UseSqlServer(Configuration.GetConnectionString("myconn")));
 
@@ -47,7 +46,7 @@ namespace _2PAC.WebApp
             {
                 options.AddPolicy("AllowLocalAndAppServiceAngular", builder => builder
                     .WithOrigins(
-                        "http://localhost:5001",
+                        "http://localhost:4200",
                         "https://2pacwebapp.azurewebsites.net")
                     .AllowAnyMethod()
                     .AllowAnyHeader());

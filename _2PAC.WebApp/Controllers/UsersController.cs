@@ -35,12 +35,13 @@ namespace _2PAC.WebApp.Controllers
             {
                 List<L_User> usersAll = await _userRepository.GetAllUsers();
                 string json = JsonSerializer.Serialize(usersAll);
-                return new ContentResult
-                {
-                    StatusCode = 200,
-                    ContentType = "application/json",
-                    Content = json
-                };
+                return Ok(usersAll);
+                //return new ContentResult
+                //{
+                //    StatusCode = 200,
+                //    ContentType = "application/json",
+                //    Content = json
+                //};
                 // (200 OK response, with the notes serialized in the response body -- instead of some view's HTML)
             }
             // TODO:
