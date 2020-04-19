@@ -56,7 +56,6 @@ namespace _2PAC.WebApp
             services.AddControllers(options =>
             {
                 options.ReturnHttpNotAcceptable = true;
-                // remove the default text/plain string formatter to clean up the OpenAPI document
                 options.OutputFormatters.RemoveType<StringOutputFormatter>();
                 options.SuppressAsyncSuffixInActionNames = false;
             });
