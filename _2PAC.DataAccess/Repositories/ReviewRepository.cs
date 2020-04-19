@@ -1,7 +1,9 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 using _2PAC.DataAccess.Context;
 using _2PAC.DataAccess.Logic;
 using _2PAC.Domain.Interfaces;
@@ -20,15 +22,24 @@ namespace _2PAC.DataAccess.Repositories
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 // ! CLASS SPECIFIC
+        /// <summary> Fetches all reviews.
+        /// <returns> All reviews. </returns>
+        /// </summary>
+        public async Task<List<L_Review>> GetAllReviews()
+        {
+            _logger.LogInformation($"Retrieving all reviews.");
+            List<D_Review> returnReviews = await _dbContext.Reviews.ToListAsync();
+            return returnReviews.Select(Mapper.MapReview).ToList();
+        }
         /// <summary> Fetches one review related to its id.
         /// <param name="reviewId"> int (review id) </param>
         /// <returns> A single review related to input id </returns>
         /// </summary>
-        public L_Review GetReviewById(int reviewId)
+        public async Task<L_Review> GetReviewById(int reviewId)
         {
             _logger.LogInformation($"Retrieving review with id: {reviewId}");
-            D_Review returnReview = _dbContext.Reviews
-                .First(p => p.ReviewId == reviewId);
+            D_Review returnReview = await _dbContext.Reviews
+                .FirstOrDefaultAsync(p => p.ReviewId == reviewId);
             return Mapper.MapReview(returnReview);
         }
         /// <summary> Adds a new review to the database.
@@ -53,10 +64,10 @@ namespace _2PAC.DataAccess.Repositories
         /// <param name="reviewId"> int (review id) </param>
         /// <returns> void </returns>
         /// </summary>
-        public void DeleteReviewById(int reviewId)
+        public async Task DeleteReviewById(int reviewId)
         {
             _logger.LogInformation($"Deleting review with ID {reviewId}");
-            D_Review entity = _dbContext.Reviews.Find(reviewId);
+            D_Review entity = await _dbContext.Reviews.FindAsync(reviewId);
             if (entity == null)
             {
                 _logger.LogInformation($"Review ID {reviewId} not found to delete! : Returning.");
@@ -68,10 +79,10 @@ namespace _2PAC.DataAccess.Repositories
         /// <param name="reviewData"> object L_Review (name of object) - This is a logic object of type review. </param>
         /// <returns> void </returns>
         /// </summary>
-        public void UpdateReview(L_Review inputReview)
+        public async Task UpdateReview(L_Review inputReview)
         {
             _logger.LogInformation($"Updating review with ID {inputReview.ReviewId}");
-            D_Review currentEntity = _dbContext.Reviews.Find(inputReview.ReviewId);
+            D_Review currentEntity = await _dbContext.Reviews.FindAsync(inputReview.ReviewId);
             D_Review newEntity = Mapper.UnMapReview(inputReview);
 
             _dbContext.Entry(currentEntity).CurrentValues.SetValues(newEntity);
@@ -81,11 +92,13 @@ namespace _2PAC.DataAccess.Repositories
         /// <param name="gameId"> int (game id) </param>
         /// <returns> All reviews related to input game </returns>
         /// </summary>
-        public List<L_Review> GetReviewsByGameId(int gameId)
+        public async Task<List<L_Review>> GetReviewsByGameId(int gameId)
         {
             _logger.LogInformation($"Retrieving reviews with game id: {gameId}");
-            List<D_Review> returnReviews = _dbContext.Reviews
-                .ToList()
+            IQueryable<D_Review> returnReviews = _dbContext.Reviews;
+            List<D_Review> reviews = await returnReviews
+                .ToListAsync();
+            reviews = reviews
                 .FindAll(p => p.GameId == gameId);
             return returnReviews.Select(Mapper.MapReview).ToList();
         }
@@ -93,11 +106,12 @@ namespace _2PAC.DataAccess.Repositories
         /// <param name="gameId"> int (game id) </param>
         /// <returns> void </returns>
         /// </summary>
-        public void DeleteReviewsByGameId(int gameId)
+        public async Task DeleteReviewsByGameId(int gameId)
         {
             _logger.LogInformation($"Deleting reviews with game ID {gameId}");
-            List<D_Review> entity = _dbContext.Reviews
-                .ToList()
+            List<D_Review> entity = await _dbContext.Reviews
+                .ToListAsync();
+            entity = entity
                 .FindAll(p => p.GameId == gameId);
             if (entity.Count == 0)
             {
@@ -113,11 +127,12 @@ namespace _2PAC.DataAccess.Repositories
         /// <param name="userId"> int (user id) </param>
         /// <returns> All reviews related to input user </returns>
         /// </summary>
-        public List<L_Review> GetReviewsByUserId(int userId)
+        public async Task<List<L_Review>> GetReviewsByUserId(int userId)
         {
             _logger.LogInformation($"Retrieving reviews with user id: {userId}");
-            List<D_Review> returnReviews = _dbContext.Reviews
-                .ToList()
+            List<D_Review> returnReviews = await _dbContext.Reviews
+                .ToListAsync();
+            returnReviews
                 .FindAll(p => p.UserId == userId);
             return returnReviews.Select(Mapper.MapReview).ToList();
         }
@@ -125,11 +140,12 @@ namespace _2PAC.DataAccess.Repositories
         /// <param name="userId"> int (user id) </param>
         /// <returns> void </returns>
         /// </summary>
-        public void DeleteReviewsByUserId(int userId)
+        public async Task DeleteReviewsByUserId(int userId)
         {
             _logger.LogInformation($"Deleting reviews with game ID {userId}");
-            List<D_Review> entity = _dbContext.Reviews
-                .ToList()
+            List<D_Review> entity = await _dbContext.Reviews
+                .ToListAsync();
+            entity = entity
                 .FindAll(p => p.UserId == userId);
             if (entity.Count == 0)
             {

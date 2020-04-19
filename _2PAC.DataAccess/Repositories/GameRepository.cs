@@ -1,7 +1,9 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 using _2PAC.DataAccess.Context;
 using _2PAC.DataAccess.Logic;
 using _2PAC.Domain.Interfaces;
@@ -23,21 +25,21 @@ namespace _2PAC.DataAccess.Repositories
         /// <summary> Fetches all games.
         /// <returns> All games. </returns>
         /// </summary>
-        public List<L_Game> GetAllGames()
+        public async Task<List<L_Game>> GetAllGames()
         {
             _logger.LogInformation($"Retrieving all games.");
-            List<D_Game> returnGames = _dbContext.Games.ToList();
+            List<D_Game> returnGames = await _dbContext.Games.ToListAsync();
             return returnGames.Select(Mapper.MapGame).ToList();
         }
         /// <summary> Fetches one game related to its id.
         /// <param name="gameId"> int (game id) </param>
         /// <returns> A single game related to input id </returns>
         /// </summary>
-        public L_Game GetGameById(int gameId)
+        public async Task<L_Game> GetGameById(int gameId)
         {
             _logger.LogInformation($"Retrieving game with id: {gameId}");
-            D_Game returnGame = _dbContext.Games
-                .First(p => p.GameId == gameId);
+            D_Game returnGame = await _dbContext.Games
+                .FirstOrDefaultAsync(p => p.GameId == gameId);
             return Mapper.MapGame(returnGame);
         }
         /// <summary> Adds a new game to the database.
@@ -62,10 +64,10 @@ namespace _2PAC.DataAccess.Repositories
         /// <param name="gameId"> int (game id) </param>
         /// <returns> void </returns>
         /// </summary>
-        public void DeleteGameById(int gameId)
+        public async Task DeleteGameById(int gameId)
         {
             _logger.LogInformation($"Deleting game with ID {gameId}");
-            D_Game entity = _dbContext.Games.Find(gameId);
+            D_Game entity = await _dbContext.Games.FindAsync(gameId);
             if (entity == null)
             {
                 _logger.LogInformation($"Game ID {gameId} not found to delete! : Returning.");
@@ -77,10 +79,10 @@ namespace _2PAC.DataAccess.Repositories
         /// <param name="inputGame"> object L_Game (name of object) - This is a logic object of type game. </param>
         /// <returns> void </returns>
         /// </summary>
-        public void UpdateGame(L_Game inputGame)
+        public async Task UpdateGame(L_Game inputGame)
         {
             _logger.LogInformation($"Updating game with ID {inputGame.GameId}");
-            D_Game currentEntity = _dbContext.Games.Find(inputGame.GameId);
+            D_Game currentEntity = await _dbContext.Games.FindAsync(inputGame.GameId);
             D_Game newEntity = Mapper.UnMapGame(inputGame);
 
             _dbContext.Entry(currentEntity).CurrentValues.SetValues(newEntity);

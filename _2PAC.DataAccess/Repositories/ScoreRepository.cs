@@ -1,7 +1,9 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 using _2PAC.DataAccess.Context;
 using _2PAC.DataAccess.Logic;
 using _2PAC.Domain.Interfaces;
@@ -20,21 +22,22 @@ namespace _2PAC.DataAccess.Repositories
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 // ! CLASS SPECIFIC
-        public List<L_Score> GetAllScores()
+        public async Task<List<L_Score>> GetAllScores()
         {
             _logger.LogInformation($"Retrieving all scores.");
-            List<D_Score> returnScores = _dbContext.Scores.ToList();
-            return returnScores.Select(Mapper.MapScore).ToList();
+            IQueryable<D_Score> returnScores = _dbContext.Scores;
+            List<D_Score> scores = await returnScores.ToListAsync();
+            return scores.Select(Mapper.MapScore).ToList();
         }
         /// <summary> Fetches one score related to its id.
         /// <param name="scoreId"> int (score id) </param>
         /// <returns> A single score related to input id </returns>
         /// </summary>
-        public L_Score GetScoreById(int scoreId)
+        public async Task<L_Score> GetScoreById(int scoreId)
         {
             _logger.LogInformation($"Retrieving score with id: {scoreId}");
-            D_Score returnScore = _dbContext.Scores
-                .First(p => p.ScoreId == scoreId);
+            D_Score returnScore = await _dbContext.Scores
+                .FirstOrDefaultAsync(p => p.ScoreId == scoreId);
             return Mapper.MapScore(returnScore);
         }
         /// <summary> Adds a new game data to the database.
@@ -59,10 +62,10 @@ namespace _2PAC.DataAccess.Repositories
         /// <param name="scoreId"> int (score id) </param>
         /// <returns> void </returns>
         /// </summary>
-        public void DeleteScoreById(int scoreId)
+        public async Task DeleteScoreById(int scoreId)
         {
             _logger.LogInformation($"Deleting score with ID {scoreId}");
-            D_Score entity = _dbContext.Scores.Find(scoreId);
+            D_Score entity = await _dbContext.Scores.FindAsync(scoreId);
             if (entity == null)
             {
                 _logger.LogInformation($"Score ID {scoreId} not found to delete! : Returning.");
@@ -74,10 +77,10 @@ namespace _2PAC.DataAccess.Repositories
         /// <param name="inputScore"> object L_Score (name of object) - This is a logic object of type Score. </param>
         /// <returns> void </returns>
         /// </summary>
-        public void UpdateScore(L_Score inputScore)
+        public async Task UpdateScore(L_Score inputScore)
         {
             _logger.LogInformation($"Updating score with ID {inputScore.ScoreId}");
-            D_Score currentEntity = _dbContext.Scores.Find(inputScore.ScoreId);
+            D_Score currentEntity = await _dbContext.Scores.FindAsync(inputScore.ScoreId);
             D_Score newEntity = Mapper.UnMapScore(inputScore);
 
             _dbContext.Entry(currentEntity).CurrentValues.SetValues(newEntity);
@@ -87,25 +90,29 @@ namespace _2PAC.DataAccess.Repositories
         /// <param name="gameId"> int (game id) </param>
         /// <returns> All scores related to input game </returns>
         /// </summary>
-        public List<L_Score> GetScoresByGameId(int gameId)
+        public async Task<List<L_Score>> GetScoresByGameId(int gameId)
         {
             _logger.LogInformation($"Retrieving scores with game id: {gameId}");
-            List<D_Score> returnScores = _dbContext.Scores
-                .ToList()
-                .FindAll(p => p.GameId == gameId);
-            return returnScores.Select(Mapper.MapScore).ToList();
+            IQueryable<D_Score> returnScores = _dbContext.Scores;
+            List<D_Score> scores = await returnScores
+                .ToListAsync();
+            scores = scores.FindAll(p => p.GameId == gameId);
+
+            return scores.Select(Mapper.MapScore).ToList();
         }
         /// <summary> Delete all scores related to a particular game.
         /// <param name="gameId"> int (game id) </param>
         /// <returns> void </returns>
         /// </summary>
-        public void DeleteScoresByGameId(int gameId)
+        public async Task DeleteScoresByGameId(int gameId)
         {
             _logger.LogInformation($"Deleting scores with game ID {gameId}");
-            List<D_Score> entity = _dbContext.Scores
-                .ToList()
+            IQueryable<D_Score> entity = _dbContext.Scores;
+            List<D_Score> scores = await entity
+                .ToListAsync();
+            scores = scores
                 .FindAll(p => p.GameId == gameId);
-            if (entity.Count == 0)
+            if (scores.Count == 0)
             {
                 _logger.LogInformation($"Scores with Game ID {gameId} not found to delete! : Returning.");
                 return;
@@ -119,11 +126,13 @@ namespace _2PAC.DataAccess.Repositories
         /// <param name="userId"> int (user id) </param>
         /// <returns> All scores related to input user </returns>
         /// </summary>
-        public List<L_Score> GetScoresByUserId(int userId)
+        public async Task<List<L_Score>> GetScoresByUserId(int userId)
         {
             _logger.LogInformation($"Retrieving scores with user id: {userId}");
-            List<D_Score> returnScores = _dbContext.Scores
-                .ToList()
+            IQueryable<D_Score> returnScores = _dbContext.Scores;
+            List<D_Score> scores = await returnScores
+                .ToListAsync();
+            scores = scores
                 .FindAll(p => p.UserId == userId);
             return returnScores.Select(Mapper.MapScore).ToList();
         }
@@ -131,13 +140,15 @@ namespace _2PAC.DataAccess.Repositories
         /// <param name="userId"> int (user id) </param>
         /// <returns> void </returns>
         /// </summary>
-        public void DeleteScoresByUserId(int userId)
+        public async Task DeleteScoresByUserId(int userId)
         {
             _logger.LogInformation($"Deleting scores with user ID {userId}");
-            List<D_Score> entity = _dbContext.Scores
-                .ToList()
+            IQueryable<D_Score> entity = _dbContext.Scores;
+            List<D_Score> scores = await entity
+                .ToListAsync();
+            scores = scores
                 .FindAll(p => p.UserId == userId);
-            if (entity.Count == 0)
+            if (scores.Count == 0)
             {
                 _logger.LogInformation($"Scores with Game ID {userId} not found to delete! : Returning.");
                 return;

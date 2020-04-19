@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using _2PAC.Domain.LogicModel;
 
 namespace _2PAC.Domain.Interfaces
@@ -9,12 +10,12 @@ namespace _2PAC.Domain.Interfaces
         /// <summary> Fetches all notices.
         /// <returns> All notices. </returns>
         /// </summary>
-        List<L_Notice> GetAllNotices();
+        Task<List<L_Notice>> GetAllNotices();
         /// <summary> Fetches one notice related to its id.
         /// <param name="noticeId"> int (notice id) </param>
         /// <returns> A single notice related to input id </returns>
         /// </summary>
-        L_Notice GetNoticeById(int noticeId);
+        Task<L_Notice> GetNoticeById(int noticeId);
         /// <summary> Adds a new notice to the database.
         /// <param name="inputNotice"> object L_Notice (name of object) - This is a logic object of type notice. </param>
         /// <returns> void </returns>
@@ -24,12 +25,12 @@ namespace _2PAC.Domain.Interfaces
         /// <param name="noticeId"> int (notice id) </param>
         /// <returns> void </returns>
         /// </summary>
-        void DeleteNoticeById(int noticeId);
+        Task DeleteNoticeById(int noticeId);
         /// <summary> Changes all notice related to a particular existing notice.
         /// <param name="inputNotice"> object L_Notice (name of object) - This is a logic object of type notice. </param>
         /// <returns> void </returns>
         /// </summary>
-        void UpdateNotice(L_Notice inputNotice);
+        Task UpdateNotice(L_Notice inputNotice);
 // ! RELATED TO OTHER CLASSES
 
 // ! GENERAL COMMANDS
