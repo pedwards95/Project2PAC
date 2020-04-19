@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using _2PAC.Domain.LogicModel;
 
 namespace _2PAC.Domain.Interfaces
@@ -9,12 +10,12 @@ namespace _2PAC.Domain.Interfaces
         /// <summary> Fetches all games.
         /// <returns> All games. </returns>
         /// </summary>
-        List<L_Game> GetAllGames();
+        Task<List<L_Game>> GetAllGames();
         /// <summary> Fetches one game related to its id.
         /// <param name="gameId"> int (game id) </param>
         /// <returns> A single game related to input id </returns>
         /// </summary>
-        L_Game GetGameById(int gameId);
+        Task<L_Game> GetGameById(int gameId);
         /// <summary> Adds a new game to the database.
         /// <param name="inputGame"> object L_Game (name of object) - This is a logic object of type game. </param>
         /// <returns> void </returns>
@@ -24,12 +25,12 @@ namespace _2PAC.Domain.Interfaces
         /// <param name="gameId"> int (game id) </param>
         /// <returns> void </returns>
         /// </summary>
-        void DeleteGameById(int gameId);
+        Task DeleteGameById(int gameId);
         /// <summary> Changes all game related to a particular existing game.
         /// <param name="inputGame"> object L_Game (name of object) - This is a logic object of type game. </param>
         /// <returns> void </returns>
         /// </summary>
-        void UpdateGame(L_Game inputGame);
+        Task UpdateGame(L_Game inputGame);
 // ! RELATED TO OTHER CLASSES
 
 // ! GENERAL COMMANDS

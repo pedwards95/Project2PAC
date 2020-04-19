@@ -1,7 +1,9 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 using _2PAC.DataAccess.Context;
 using _2PAC.DataAccess.Logic;
 using _2PAC.Domain.Interfaces;
@@ -21,15 +23,24 @@ namespace _2PAC.DataAccess.Repositories
         }
 
 // ! CLASS SPECIFIC
+        /// <summary> Fetches all game data.
+        /// <returns> All game data. </returns>
+        /// </summary>
+        public async Task<List<L_GameData>> GetAllGameData()
+        {
+            _logger.LogInformation($"Retrieving all game data.");
+            List<D_GameData> returnGameData = await _dbContext.GameDatas.ToListAsync();
+            return returnGameData.Select(Mapper.MapGameData).ToList();
+        }
         /// <summary> Fetches one game data related to its id.
         /// <param name="gameDataId"> int (game data id) </param>
         /// <returns> A single game data related to input id </returns>
         /// </summary>
-        public L_GameData GetGameDataById(int gameDataId)
+        public async Task<L_GameData> GetGameDataById(int gameDataId)
         {
             _logger.LogInformation($"Retrieving game data with id: {gameDataId}");
-            D_GameData returnGameData = _dbContext.GameDatas
-                .First(p => p.DataId == gameDataId);
+            D_GameData returnGameData = await _dbContext.GameDatas
+                .FirstOrDefaultAsync(p => p.DataId == gameDataId);
             return Mapper.MapGameData(returnGameData);
         }
         /// <summary> Adds a new game data to the database.
@@ -54,10 +65,10 @@ namespace _2PAC.DataAccess.Repositories
         /// <param name="gameDataId"> int (game data id) </param>
         /// <returns> void </returns>
         /// </summary>
-        public void DeleteGameDataById(int gameDataId)
+        public async Task DeleteGameDataById(int gameDataId)
         {
             _logger.LogInformation($"Deleting game data with ID {gameDataId}");
-            D_GameData entity = _dbContext.GameDatas.Find(gameDataId);
+            D_GameData entity = await _dbContext.GameDatas.FindAsync(gameDataId);
             if (entity == null)
             {
                 _logger.LogInformation($"Game data ID {gameDataId} not found to delete! : Returning.");
@@ -69,10 +80,10 @@ namespace _2PAC.DataAccess.Repositories
         /// <param name="inputGameData"> object L_GameData (name of object) - This is a logic object of type game data. </param>
         /// <returns> void </returns>
         /// </summary>
-        public void UpdateGameData(L_GameData inputGameData)
+        public async Task UpdateGameData(L_GameData inputGameData)
         {
             _logger.LogInformation($"Updating game data with ID {inputGameData.DataId}");
-            D_GameData currentEntity = _dbContext.GameDatas.Find(inputGameData.DataId);
+            D_GameData currentEntity = await _dbContext.GameDatas.FindAsync(inputGameData.DataId);
             D_GameData newEntity = Mapper.UnMapGameData(inputGameData);
 
             _dbContext.Entry(currentEntity).CurrentValues.SetValues(newEntity);
@@ -82,11 +93,12 @@ namespace _2PAC.DataAccess.Repositories
         /// <param name="gameId"> int (game id) </param>
         /// <returns> All game data related to input game </returns>
         /// </summary>
-        public List<L_GameData> GetGameDataByGameId(int gameId)
+        public async Task<List<L_GameData>> GetGameDataByGameId(int gameId)
         {
             _logger.LogInformation($"Retrieving game data with game id: {gameId}");
-            List<D_GameData> returnGameData = _dbContext.GameDatas
-                .ToList()
+            List<D_GameData> returnGameData = await _dbContext.GameDatas
+                .ToListAsync();
+            returnGameData = returnGameData
                 .FindAll(p => p.GameId == gameId);
             return returnGameData.Select(Mapper.MapGameData).ToList();
         }
@@ -94,11 +106,12 @@ namespace _2PAC.DataAccess.Repositories
         /// <param name="gameId"> int (game id) </param>
         /// <returns> void </returns>
         /// </summary>
-        public void DeleteGameDataByGameId(int gameId)
+        public async Task DeleteGameDataByGameId(int gameId)
         {
             _logger.LogInformation($"Deleting game data with game ID {gameId}");
-            List<D_GameData> entity = _dbContext.GameDatas
-                .ToList()
+            List<D_GameData> entity = await _dbContext.GameDatas
+                .ToListAsync();
+            entity = entity
                 .FindAll(p => p.GameId == gameId);
             if (entity.Count == 0)
             {

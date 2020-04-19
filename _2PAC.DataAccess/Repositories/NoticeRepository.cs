@@ -1,7 +1,9 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 using _2PAC.DataAccess.Context;
 using _2PAC.DataAccess.Logic;
 using _2PAC.Domain.Interfaces;
@@ -23,21 +25,21 @@ namespace _2PAC.DataAccess.Repositories
         /// <summary> Fetches all notices.
         /// <returns> All notices. </returns>
         /// </summary>
-        public List<L_Notice> GetAllNotices()
+        public async Task<List<L_Notice>> GetAllNotices()
         {
             _logger.LogInformation($"Retrieving all notices.");
-            List<D_Notice> returnNotices = _dbContext.Notices.ToList();
+            List<D_Notice> returnNotices = await _dbContext.Notices.ToListAsync();
             return returnNotices.Select(Mapper.MapNotice).ToList();
         }
         /// <summary> Fetches one notice related to its id.
         /// <param name="noticeId"> int (notice id) </param>
         /// <returns> A single notice related to input id </returns>
         /// </summary>
-        public L_Notice GetNoticeById(int noticeId)
+        public async Task<L_Notice> GetNoticeById(int noticeId)
         {
             _logger.LogInformation($"Retrieving notice with id: {noticeId}");
-            D_Notice returnNotice = _dbContext.Notices
-                .First(p => p.NoticeId == noticeId);
+            D_Notice returnNotice = await _dbContext.Notices
+                .FirstOrDefaultAsync(p => p.NoticeId == noticeId);
             return Mapper.MapNotice(returnNotice);
         }
         /// <summary> Adds a new notice to the database.
@@ -62,10 +64,10 @@ namespace _2PAC.DataAccess.Repositories
         /// <param name="noticeId"> int (notice id) </param>
         /// <returns> void </returns>
         /// </summary>
-        public void DeleteNoticeById(int noticeId)
+        public async Task DeleteNoticeById(int noticeId)
         {
             _logger.LogInformation($"Deleting notice with ID {noticeId}");
-            D_Notice entity = _dbContext.Notices.Find(noticeId);
+            D_Notice entity = await _dbContext.Notices.FindAsync(noticeId);
             if (entity == null)
             {
                 _logger.LogInformation($"Notice ID {noticeId} not found to delete! : Returning.");
@@ -77,10 +79,10 @@ namespace _2PAC.DataAccess.Repositories
         /// <param name="inputNotice"> object L_Notice (name of object) - This is a logic object of type notice. </param>
         /// <returns> void </returns>
         /// </summary>
-        public void UpdateNotice(L_Notice inputNotice)
+        public async Task UpdateNotice(L_Notice inputNotice)
         {
             _logger.LogInformation($"Updating notice with ID {inputNotice.NoticeId}");
-            D_Notice currentEntity = _dbContext.Notices.Find(inputNotice.NoticeId);
+            D_Notice currentEntity = await _dbContext.Notices.FindAsync(inputNotice.NoticeId);
             D_Notice newEntity = Mapper.UnMapNotice(inputNotice);
 
             _dbContext.Entry(currentEntity).CurrentValues.SetValues(newEntity);
