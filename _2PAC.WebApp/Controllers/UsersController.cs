@@ -21,7 +21,7 @@ using System.Security.Claims;
 
 namespace _2PAC.WebApp.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("api/users")]
     public class UsersController : ControllerBase
@@ -72,7 +72,7 @@ namespace _2PAC.WebApp.Controllers
         }
 
         // POST: api/users
-        [AllowAnonymous]
+        //[AllowAnonymous]
         [HttpPost]
         [ProducesResponseType(typeof(L_User), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -137,7 +137,7 @@ namespace _2PAC.WebApp.Controllers
         // }
 
 
-        [AllowAnonymous]
+        //[AllowAnonymous]
         [HttpPost("authenticate")]
         public async Task<IActionResult> Authenticate([FromBody]AuthenticateModel model)
         {
