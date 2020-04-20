@@ -1,8 +1,10 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace _2PAC.DataAccess.Migrations
 {
+    [ExcludeFromCodeCoverage]
     public partial class initialmigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)

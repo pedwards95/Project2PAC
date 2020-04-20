@@ -3,9 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace _2PAC.DataAccess.Context
 {
+    [ExcludeFromCodeCoverage]
     public class _2PACdbContext : DbContext
     {
         public virtual DbSet<D_User> Users { get; set; }

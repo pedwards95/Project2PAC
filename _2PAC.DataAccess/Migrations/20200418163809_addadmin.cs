@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace _2PAC.DataAccess.Migrations
 {
+    [ExcludeFromCodeCoverage]
     public partial class addadmin : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)

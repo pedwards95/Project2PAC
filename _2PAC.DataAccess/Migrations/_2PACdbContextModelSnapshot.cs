@@ -5,9 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using _2PAC.DataAccess.Context;
+using System.Diagnostics.CodeAnalysis;
 
 namespace _2PAC.DataAccess.Migrations
 {
+    [ExcludeFromCodeCoverage]
     [DbContext(typeof(_2PACdbContext))]
     partial class _2PACdbContextModelSnapshot : ModelSnapshot
     {
