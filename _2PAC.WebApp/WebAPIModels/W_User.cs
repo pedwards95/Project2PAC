@@ -12,6 +12,7 @@ namespace _2PAC.WebApp.WebAPIModel
         public string Password {get; set;}
         public string Description {get; set;}
         public bool Admin {get; set;}
+        public string Token {get; set;}
 
         public List<W_Review> Reviews {get; set;}
         public List<W_Score> Scores {get; set;}

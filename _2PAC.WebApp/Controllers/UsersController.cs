@@ -6,14 +6,22 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 using _2PAC.Domain.LogicModel;
 using _2PAC.Domain.Interfaces;
 using _2PAC.WebApp.WebAPIModel;
 using _2PAC.DataAccess.Repositories;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 
 
 namespace _2PAC.WebApp.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/users")]
     public class UsersController : ControllerBase
@@ -36,13 +44,6 @@ namespace _2PAC.WebApp.Controllers
                 List<L_User> usersAll = await _userRepository.GetAllUsers();
                 string json = JsonSerializer.Serialize(usersAll);
                 return Ok(usersAll);
-                //return new ContentResult
-                //{
-                //    StatusCode = 200,
-                //    ContentType = "application/json",
-                //    Content = json
-                //};
-                // (200 OK response, with the notes serialized in the response body -- instead of some view's HTML)
             }
             // TODO:
             throw new NotImplementedException();
@@ -71,6 +72,7 @@ namespace _2PAC.WebApp.Controllers
         }
 
         // POST: api/users
+        [AllowAnonymous]
         [HttpPost]
         [ProducesResponseType(typeof(L_User), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -118,6 +120,61 @@ namespace _2PAC.WebApp.Controllers
                 return NoContent();
             }
             return NotFound();
+        }
+
+        // [HttpPost("{username}, {password}")]
+        // [ProducesResponseType(typeof(L_User), StatusCodes.Status200OK)]
+        // [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        // [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        // public async Task<IActionResult> Authenticate(string username, string password)
+        // {
+        //     L_User user = await _userRepository.GetUserByUsername(username);
+        //     if(user.Password != password)
+        //     {
+        //         return BadRequest();
+        //     }
+        //     return Ok(user);
+        // }
+
+
+        [AllowAnonymous]
+        [HttpPost("authenticate")]
+        public async Task<IActionResult> Authenticate([FromBody]AuthenticateModel model)
+        {
+            var user = await _userRepository.GetUserByUsername(model.Username);
+
+            if (user == null)
+                return BadRequest(new { message = "Username or password is incorrect" });
+
+            if(user.Password != model.Password)
+                return BadRequest(new { message = "Username or password is incorrect" });
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_userRepository.Secret);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.Name, user.UserId.ToString())
+                }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var tokenString = tokenHandler.WriteToken(token);
+
+            // return basic user info and authentication token
+            return Ok(new W_User
+            {
+                UserId = user.UserId,
+                PictureId = user.PictureId,
+                Username = user.Username,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Description = user.Description,
+                Admin = user.Admin,
+                Token = tokenString
+            });
         }
     }
 }
