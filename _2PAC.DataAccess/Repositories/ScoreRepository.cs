@@ -26,7 +26,10 @@ namespace _2PAC.DataAccess.Repositories
         {
             _logger.LogInformation($"Retrieving all scores.");
             IQueryable<D_Score> returnScores = _dbContext.Scores;
-            List<D_Score> scores = await returnScores.ToListAsync();
+            List<D_Score> scores = await returnScores
+                .Include(p => p.User)
+                .Include(p => p.Game)
+                .ToListAsync();
             return scores.Select(Mapper.MapScore).ToList();
         }
         /// <summary> Fetches one score related to its id.
@@ -37,6 +40,8 @@ namespace _2PAC.DataAccess.Repositories
         {
             _logger.LogInformation($"Retrieving score with id: {scoreId}");
             D_Score returnScore = await _dbContext.Scores
+                .Include(p => p.User)
+                .Include(p => p.Game)
                 .FirstOrDefaultAsync(p => p.ScoreId == scoreId);
             return Mapper.MapScore(returnScore);
         }
@@ -65,7 +70,10 @@ namespace _2PAC.DataAccess.Repositories
         public async Task DeleteScoreById(int scoreId)
         {
             _logger.LogInformation($"Deleting score with ID {scoreId}");
-            D_Score entity = await _dbContext.Scores.FindAsync(scoreId);
+            D_Score entity = await _dbContext.Scores
+                .Include(p => p.User)
+                .Include(p => p.Game)
+                .FirstOrDefaultAsync(p => p.ScoreId == scoreId);
             if (entity == null)
             {
                 _logger.LogInformation($"Score ID {scoreId} not found to delete! : Returning.");
@@ -80,7 +88,10 @@ namespace _2PAC.DataAccess.Repositories
         public async Task UpdateScore(L_Score inputScore)
         {
             _logger.LogInformation($"Updating score with ID {inputScore.ScoreId}");
-            D_Score currentEntity = await _dbContext.Scores.FindAsync(inputScore.ScoreId);
+            D_Score currentEntity = await _dbContext.Scores
+                .Include(p => p.User)
+                .Include(p => p.Game)
+                .FirstOrDefaultAsync(p => p.ScoreId == inputScore.ScoreId);
             D_Score newEntity = Mapper.UnMapScore(inputScore);
 
             _dbContext.Entry(currentEntity).CurrentValues.SetValues(newEntity);
@@ -93,7 +104,9 @@ namespace _2PAC.DataAccess.Repositories
         public async Task<List<L_Score>> GetScoresByGameId(int gameId)
         {
             _logger.LogInformation($"Retrieving scores with game id: {gameId}");
-            IQueryable<D_Score> returnScores = _dbContext.Scores;
+            IQueryable<D_Score> returnScores = _dbContext.Scores
+                .Include(p => p.User)
+                .Include(p => p.Game);
             List<D_Score> scores = await returnScores
                 .ToListAsync();
             scores = scores.FindAll(p => p.GameId == gameId);
@@ -107,7 +120,9 @@ namespace _2PAC.DataAccess.Repositories
         public async Task DeleteScoresByGameId(int gameId)
         {
             _logger.LogInformation($"Deleting scores with game ID {gameId}");
-            IQueryable<D_Score> entity = _dbContext.Scores;
+            IQueryable<D_Score> entity = _dbContext.Scores
+                .Include(p => p.User)
+                .Include(p => p.Game);
             List<D_Score> scores = await entity
                 .ToListAsync();
             scores = scores
@@ -129,7 +144,9 @@ namespace _2PAC.DataAccess.Repositories
         public async Task<List<L_Score>> GetScoresByUserId(int userId)
         {
             _logger.LogInformation($"Retrieving scores with user id: {userId}");
-            IQueryable<D_Score> returnScores = _dbContext.Scores;
+            IQueryable<D_Score> returnScores = _dbContext.Scores
+                .Include(p => p.User)
+                .Include(p => p.Game);
             List<D_Score> scores = await returnScores
                 .ToListAsync();
             scores = scores
@@ -143,7 +160,9 @@ namespace _2PAC.DataAccess.Repositories
         public async Task DeleteScoresByUserId(int userId)
         {
             _logger.LogInformation($"Deleting scores with user ID {userId}");
-            IQueryable<D_Score> entity = _dbContext.Scores;
+            IQueryable<D_Score> entity = _dbContext.Scores
+                .Include(p => p.User)
+                .Include(p => p.Game);
             List<D_Score> scores = await entity
                 .ToListAsync();
             scores = scores

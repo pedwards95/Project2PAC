@@ -29,7 +29,9 @@ namespace _2PAC.DataAccess.Repositories
         public async Task<List<L_GameData>> GetAllGameData()
         {
             _logger.LogInformation($"Retrieving all game data.");
-            List<D_GameData> returnGameData = await _dbContext.GameDatas.ToListAsync();
+            List<D_GameData> returnGameData = await _dbContext.GameDatas
+                .Include(p => p.Game)
+                .ToListAsync();
             return returnGameData.Select(Mapper.MapGameData).ToList();
         }
         /// <summary> Fetches one game data related to its id.
@@ -40,6 +42,7 @@ namespace _2PAC.DataAccess.Repositories
         {
             _logger.LogInformation($"Retrieving game data with id: {gameDataId}");
             D_GameData returnGameData = await _dbContext.GameDatas
+                .Include(p => p.Game)
                 .FirstOrDefaultAsync(p => p.DataId == gameDataId);
             return Mapper.MapGameData(returnGameData);
         }
@@ -68,7 +71,9 @@ namespace _2PAC.DataAccess.Repositories
         public async Task DeleteGameDataById(int gameDataId)
         {
             _logger.LogInformation($"Deleting game data with ID {gameDataId}");
-            D_GameData entity = await _dbContext.GameDatas.FindAsync(gameDataId);
+            D_GameData entity = await _dbContext.GameDatas
+                .Include(p => p.Game)
+                .FirstOrDefaultAsync(p => p.DataId == gameDataId);
             if (entity == null)
             {
                 _logger.LogInformation($"Game data ID {gameDataId} not found to delete! : Returning.");
@@ -83,7 +88,9 @@ namespace _2PAC.DataAccess.Repositories
         public async Task UpdateGameData(L_GameData inputGameData)
         {
             _logger.LogInformation($"Updating game data with ID {inputGameData.DataId}");
-            D_GameData currentEntity = await _dbContext.GameDatas.FindAsync(inputGameData.DataId);
+            D_GameData currentEntity = await _dbContext.GameDatas
+                .Include(p => p.Game)
+                .FirstOrDefaultAsync(p => p.DataId == inputGameData.DataId);
             D_GameData newEntity = Mapper.UnMapGameData(inputGameData);
 
             _dbContext.Entry(currentEntity).CurrentValues.SetValues(newEntity);
@@ -97,6 +104,7 @@ namespace _2PAC.DataAccess.Repositories
         {
             _logger.LogInformation($"Retrieving game data with game id: {gameId}");
             List<D_GameData> returnGameData = await _dbContext.GameDatas
+                .Include(p => p.Game)
                 .ToListAsync();
             returnGameData = returnGameData
                 .FindAll(p => p.GameId == gameId);
@@ -110,6 +118,7 @@ namespace _2PAC.DataAccess.Repositories
         {
             _logger.LogInformation($"Deleting game data with game ID {gameId}");
             List<D_GameData> entity = await _dbContext.GameDatas
+                .Include(p => p.Game)
                 .ToListAsync();
             entity = entity
                 .FindAll(p => p.GameId == gameId);

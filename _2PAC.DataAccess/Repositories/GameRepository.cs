@@ -28,7 +28,12 @@ namespace _2PAC.DataAccess.Repositories
         public async Task<List<L_Game>> GetAllGames()
         {
             _logger.LogInformation($"Retrieving all games.");
-            List<D_Game> returnGames = await _dbContext.Games.ToListAsync();
+            List<D_Game> returnGames = await _dbContext.Games
+                .Include(p => p.Scores)
+                .Include(p => p.Reviews)
+                .ThenInclude(p => p.User)
+                .Include(p => p.Data)
+                .ToListAsync();
             return returnGames.Select(Mapper.MapGame).ToList();
         }
         /// <summary> Fetches one game related to its id.
@@ -39,6 +44,9 @@ namespace _2PAC.DataAccess.Repositories
         {
             _logger.LogInformation($"Retrieving game with id: {gameId}");
             D_Game returnGame = await _dbContext.Games
+                .Include(p => p.Scores)
+                .Include(p => p.Reviews)
+                .Include(p => p.Data)
                 .FirstOrDefaultAsync(p => p.GameId == gameId);
             return Mapper.MapGame(returnGame);
         }
@@ -67,7 +75,11 @@ namespace _2PAC.DataAccess.Repositories
         public async Task DeleteGameById(int gameId)
         {
             _logger.LogInformation($"Deleting game with ID {gameId}");
-            D_Game entity = await _dbContext.Games.FindAsync(gameId);
+            D_Game entity = await _dbContext.Games
+                .Include(p => p.Scores)
+                .Include(p => p.Reviews)
+                .Include(p => p.Data)
+                .FirstOrDefaultAsync(p => p.GameId == gameId);
             if (entity == null)
             {
                 _logger.LogInformation($"Game ID {gameId} not found to delete! : Returning.");
@@ -82,7 +94,11 @@ namespace _2PAC.DataAccess.Repositories
         public async Task UpdateGame(L_Game inputGame)
         {
             _logger.LogInformation($"Updating game with ID {inputGame.GameId}");
-            D_Game currentEntity = await _dbContext.Games.FindAsync(inputGame.GameId);
+            D_Game currentEntity = await _dbContext.Games
+                .Include(p => p.Scores)
+                .Include(p => p.Reviews)
+                .Include(p => p.Data)
+                .FirstOrDefaultAsync(p => p.GameId == inputGame.GameId);
             D_Game newEntity = Mapper.UnMapGame(inputGame);
 
             _dbContext.Entry(currentEntity).CurrentValues.SetValues(newEntity);

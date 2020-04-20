@@ -38,6 +38,11 @@ namespace _2PAC.WebApp
 
             services.AddDbContext<_2PACdbContext>(p => p.UseSqlServer(Configuration.GetConnectionString("myconn")));
 
+            services.AddScoped<IGameDataRepository, GameDataRepository>();
+            services.AddScoped<IGameRepository, GameRepository>();
+            services.AddScoped<INoticeRepository, NoticeRepository>();
+            services.AddScoped<IReviewRepository, ReviewRepository>();
+            services.AddScoped<IScoreRepository, ScoreRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddSwaggerGen(c =>

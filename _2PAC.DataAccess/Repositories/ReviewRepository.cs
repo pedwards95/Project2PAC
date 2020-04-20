@@ -28,7 +28,10 @@ namespace _2PAC.DataAccess.Repositories
         public async Task<List<L_Review>> GetAllReviews()
         {
             _logger.LogInformation($"Retrieving all reviews.");
-            List<D_Review> returnReviews = await _dbContext.Reviews.ToListAsync();
+            List<D_Review> returnReviews = await _dbContext.Reviews
+                .Include(p => p.User)
+                .Include(p => p.Game)
+                .ToListAsync();
             return returnReviews.Select(Mapper.MapReview).ToList();
         }
         /// <summary> Fetches one review related to its id.
@@ -39,6 +42,8 @@ namespace _2PAC.DataAccess.Repositories
         {
             _logger.LogInformation($"Retrieving review with id: {reviewId}");
             D_Review returnReview = await _dbContext.Reviews
+                .Include(p => p.User)
+                .Include(p => p.Game)
                 .FirstOrDefaultAsync(p => p.ReviewId == reviewId);
             return Mapper.MapReview(returnReview);
         }
@@ -67,7 +72,10 @@ namespace _2PAC.DataAccess.Repositories
         public async Task DeleteReviewById(int reviewId)
         {
             _logger.LogInformation($"Deleting review with ID {reviewId}");
-            D_Review entity = await _dbContext.Reviews.FindAsync(reviewId);
+            D_Review entity = await _dbContext.Reviews
+                .Include(p => p.User)
+                .Include(p => p.Game)
+                .FirstOrDefaultAsync(p => p.ReviewId == reviewId);
             if (entity == null)
             {
                 _logger.LogInformation($"Review ID {reviewId} not found to delete! : Returning.");
@@ -82,7 +90,10 @@ namespace _2PAC.DataAccess.Repositories
         public async Task UpdateReview(L_Review inputReview)
         {
             _logger.LogInformation($"Updating review with ID {inputReview.ReviewId}");
-            D_Review currentEntity = await _dbContext.Reviews.FindAsync(inputReview.ReviewId);
+            D_Review currentEntity = await _dbContext.Reviews
+                .Include(p => p.User)
+                .Include(p => p.Game)
+                .FirstOrDefaultAsync(p => p.ReviewId == inputReview.ReviewId);
             D_Review newEntity = Mapper.UnMapReview(inputReview);
 
             _dbContext.Entry(currentEntity).CurrentValues.SetValues(newEntity);
@@ -95,7 +106,9 @@ namespace _2PAC.DataAccess.Repositories
         public async Task<List<L_Review>> GetReviewsByGameId(int gameId)
         {
             _logger.LogInformation($"Retrieving reviews with game id: {gameId}");
-            IQueryable<D_Review> returnReviews = _dbContext.Reviews;
+            IQueryable<D_Review> returnReviews = _dbContext.Reviews
+                .Include(p => p.User)
+                .Include(p => p.Game);
             List<D_Review> reviews = await returnReviews
                 .ToListAsync();
             reviews = reviews
@@ -110,6 +123,8 @@ namespace _2PAC.DataAccess.Repositories
         {
             _logger.LogInformation($"Deleting reviews with game ID {gameId}");
             List<D_Review> entity = await _dbContext.Reviews
+                .Include(p => p.User)
+                .Include(p => p.Game)
                 .ToListAsync();
             entity = entity
                 .FindAll(p => p.GameId == gameId);
@@ -131,6 +146,8 @@ namespace _2PAC.DataAccess.Repositories
         {
             _logger.LogInformation($"Retrieving reviews with user id: {userId}");
             List<D_Review> returnReviews = await _dbContext.Reviews
+                .Include(p => p.User)
+                .Include(p => p.Game)
                 .ToListAsync();
             returnReviews
                 .FindAll(p => p.UserId == userId);
@@ -144,6 +161,8 @@ namespace _2PAC.DataAccess.Repositories
         {
             _logger.LogInformation($"Deleting reviews with game ID {userId}");
             List<D_Review> entity = await _dbContext.Reviews
+                .Include(p => p.User)
+                .Include(p => p.Game)
                 .ToListAsync();
             entity = entity
                 .FindAll(p => p.UserId == userId);
