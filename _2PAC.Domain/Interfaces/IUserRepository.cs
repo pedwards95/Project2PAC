@@ -6,6 +6,7 @@ namespace _2PAC.Domain.Interfaces
 {
     public interface IUserRepository
     {
+        public string Secret { get; set; }
 // ! CLASS SPECIFIC
         /// <summary> Fetches all users.
         /// <returns> All users. </returns>
@@ -16,6 +17,11 @@ namespace _2PAC.Domain.Interfaces
         /// <returns> A single user related to input id </returns>
         /// </summary>
         Task<L_User> GetUserById(int userId);
+        /// <summary> Fetches one user related to its username.
+        /// <param name="username"> string (users username) </param>
+        /// <returns> A single user related to input username </returns>
+        /// </summary>
+        Task<L_User> GetUserByUsername(string username);
         /// <summary> Adds a new user to the database.
         /// <param name="inputUser"> object L_User (name of object) - This is a logic object of type user. </param>
         /// <returns> void </returns>

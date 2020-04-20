@@ -13,6 +13,7 @@ namespace _2PAC.DataAccess.Repositories
 {
     public class UserRepository : IUserRepository
     {
+        public string Secret { get; set; }
         private readonly _2PACdbContext _dbContext;
         private readonly ILogger<UserRepository> _logger;
 
@@ -20,6 +21,7 @@ namespace _2PAC.DataAccess.Repositories
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            Secret = "longerinsecurestringlolisthislongenough";
         }
 // ! CLASS SPECIFIC
         /// <summary> Fetches all users.
@@ -43,7 +45,34 @@ namespace _2PAC.DataAccess.Repositories
         {
             _logger.LogInformation($"Retrieving user with id: {userId}");
             D_User returnUser = await _dbContext.Users
+                .Include(p => p.Scores)
+                .Include(p => p.Reviews)
+                .ThenInclude(p => p.Game)
                 .FirstOrDefaultAsync(p => p.UserId == userId);
+            if(returnUser == null)
+            {
+                _logger.LogInformation($"No user with id: {userId} found!");
+                return null;
+            }
+            return Mapper.MapUser(returnUser);
+        }
+        /// <summary> Fetches one user related to its username.
+        /// <param name="username"> string (users username) </param>
+        /// <returns> A single user related to input username </returns>
+        /// </summary>
+        public async Task<L_User> GetUserByUsername(string username)
+        {
+            _logger.LogInformation($"Retrieving user with username: {username}");
+            D_User returnUser = await _dbContext.Users
+                .Include(p => p.Scores)
+                .Include(p => p.Reviews)
+                .ThenInclude(p => p.Game)
+                .FirstOrDefaultAsync(p => p.Username.ToLower() == username.ToLower());
+            if(returnUser == null)
+            {
+                _logger.LogInformation($"No user with username: {username} found!");
+                return null;
+            }
             return Mapper.MapUser(returnUser);
         }
         /// <summary> Adds a new user to the database.
