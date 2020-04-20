@@ -16,6 +16,9 @@ using _2PAC.DataAccess.Repositories;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 [assembly: ApiController]
 namespace _2PAC.WebApp
@@ -57,6 +60,40 @@ namespace _2PAC.WebApp
                 options.ReturnHttpNotAcceptable = true;
                 options.OutputFormatters.RemoveType<StringOutputFormatter>();
                 options.SuppressAsyncSuffixInActionNames = false;
+            });
+
+            var key = Encoding.ASCII.GetBytes("longerinsecurestringlolisthislongenough");
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                x.Events = new JwtBearerEvents
+                {
+                    OnTokenValidated = context =>
+                    {
+                        var userService = context.HttpContext.RequestServices.GetRequiredService<IUserRepository>();
+                        var userId = int.Parse(context.Principal.Identity.Name);
+                        var user = userService.GetUserById(userId);
+                        if (user == null)
+                        {
+                            // return unauthorized if user no longer exists
+                            context.Fail("Unauthorized");
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
             });
         }
 
