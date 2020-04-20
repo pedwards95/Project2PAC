@@ -54,6 +54,7 @@ namespace _2PAC.WebApp
             {
                 options.AddPolicy("AllowLocalAndAppServiceAngular", builder => builder
                     .WithOrigins(
+                        "https://pac-clientwebapp.azurewebsites.net",
                         "http://localhost:4200",
                         "https://2pacwebapp.azurewebsites.net")
                     .AllowAnyMethod()
