@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using _2PAC.DataAccess.Context;
 
 namespace _2PAC.DataAccess.Migrations
 {
     [DbContext(typeof(_2PACdbContext))]
-    partial class _2PACdbContextModelSnapshot : ModelSnapshot
+    [Migration("20200421072002_hangmannamefix")]
+    partial class hangmannamefix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -41,8 +41,8 @@ namespace _2PAC.DataAccess.Context
                 new D_Game()
                 {
                     GameId = 1,
-                    GameName = "Memory Bingo",
-                    GameDescription = "Test your programming memory skills to fill out this board! Study for a upcoming job interview while testing your friend's game at the same time! See if you can getthe high score!"
+                    GameName = "Hangman",
+                    GameDescription = "Test your programming memory skills to fill out the words! Study for a upcoming job interview while testing your friend's game at the same time! See if you can get the high score!"
                 }
             );
             modelBuilder.Entity<D_Score>().HasData(

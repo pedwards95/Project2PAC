@@ -86,3 +86,9 @@ TODO the user interaction model (what are the user stories, what inputs/interact
 //     MVP minimum viable product
 //     potentially stretch goals, extra features
 */
+
+/*
+* in package manager console..
+* 1. add-migration initialmigration
+* 2. update-database migrationname
+* */
