@@ -57,7 +57,7 @@ namespace _2PAC.WebApp.Controllers
                         Data = game.Data
                     });
                 }
-                string json = JsonSerializer.Serialize(GamesAll);
+                string json = JsonSerializer.Serialize(RealGamesAll);
                 return new ContentResult
                 {
                     StatusCode = 200,
