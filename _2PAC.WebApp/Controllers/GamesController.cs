@@ -33,6 +33,30 @@ namespace _2PAC.WebApp.Controllers
             if (search == null)
             {
                 List<L_Game> GamesAll = await _GameRepository.GetAllGames();
+                List<W_Game> RealGamesAll = new List<W_Game>();
+                foreach (L_Game game in GamesAll)
+                {
+                    double reviewAverage = 0;
+                    foreach(L_Review review in game.Reviews)
+                    {
+                        reviewAverage = reviewAverage+review.Rating;
+                    }
+                    if(game.Reviews.Count != 0)
+                    {
+                        reviewAverage = reviewAverage/game.Reviews.Count;
+                    }
+                    RealGamesAll.Add(new W_Game
+                    {
+                        GameId = game.GameId,
+                        GameName = game.GameName,
+                        GameDescription = game.GameDescription,
+                        HighScore = game.Scores.Max(p => p.Score),
+                        AverageReview = reviewAverage,
+                        Reviews = game.Reviews,
+                        Scores = game.Scores,
+                        Data = game.Data
+                    });
+                }
                 string json = JsonSerializer.Serialize(GamesAll);
                 return new ContentResult
                 {
