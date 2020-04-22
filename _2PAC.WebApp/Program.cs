@@ -62,7 +62,7 @@ TODO     at least 50% of user stories must be fulfilled by the Angular app (but 
 //      Entity Framework Core
 //         DB should be on the cloud
 //          all DB/network access should be async
-TODO     server-side validation
+//      server-side validation
 TODO     support filtering or pagination on at least one resource
 //      logging
 TODO     implement hypermedia, or, implement an API Description Language, e.g. using Swashbuckle
@@ -72,14 +72,14 @@ TODO     (optional: implement a custom filter, health check, or middleware, e.g.
 //          Unit tests
 //          SonarCloud
 TODO             Code coverage at least 30% for API, at least 20% for Angular app
-TODO             Reliability/Security/Maintainability at least B
+//             Reliability/Security/Maintainability at least B
 TODO (optional: deploy in release definition or separate job instead of in build job, and use health checks)
 TODO (optional: calls an external API, or integrates with some other service)
 //  (optional: authentication and authorization with e.g. Auth0 or Okta)
-TODO Scrum processes
+// Scrum processes
 //      Project board to track user stories across team. (no requirements on how detailed)
 !     Standup at least two or three times a week
-TODO any other tech you want within reason
+// any other tech you want within reason
 // the data model (how many tables, what kind of complex relationship like N to N) must be at least as complicated as project 1.
 TODO the user interaction model (what are the user stories, what inputs/interactions can the user make) must be at least as complicated as project 1.
 // a project proposal
@@ -89,6 +89,6 @@ TODO the user interaction model (what are the user stories, what inputs/interact
 
 /*
 * in package manager console..
-* 1. add-migration initialmigration
+* 1. add-migration migrationname
 * 2. update-database migrationname
 * */
