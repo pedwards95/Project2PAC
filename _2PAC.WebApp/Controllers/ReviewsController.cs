@@ -76,6 +76,7 @@ namespace _2PAC.WebApp.Controllers
         public IActionResult Post(L_Review review)
         {
             _reviewRepository.AddReview(review);
+            _reviewRepository.Save();
             return CreatedAtAction(nameof(GetById), new { id = review.ReviewId }, review);
         }
 

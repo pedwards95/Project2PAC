@@ -62,7 +62,7 @@ namespace _2PAC.DataAccess.Repositories
             _logger.LogInformation("Adding review.");
 
             D_Review entity = Mapper.UnMapReview(inputReview);
-            entity.GameId = 0;
+            entity.ReviewId = 0;
             _dbContext.Add(entity);
         }
         /// <summary> Deletes one review related to a review id.
