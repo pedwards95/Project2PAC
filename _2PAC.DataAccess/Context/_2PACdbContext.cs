@@ -60,8 +60,56 @@ namespace _2PAC.DataAccess.Context
                     DataId = 1,
                     GameId = 1,
                     Difficulty = 1,
-                    Question = "Sample Question?",
-                    Answer = "Sample Answer."
+                    Question = "In object-oriented programming paradigm, what is often expressed as 'one interface, multiple functions'?",
+                    Answer = "polymorphism"
+                },
+                new D_GameData()
+                {
+                    DataId = 2,
+                    GameId = 1,
+                    Difficulty = 1,
+                    Question = "In C#, you define a (what) when you define a blueprint for a data type?",
+                    Answer = "class"
+                },
+                new D_GameData()
+                {
+                    DataId = 3,
+                    GameId = 1,
+                    Difficulty = 1,
+                    Question = "What allows us to define a class in terms of another base class, which makes it easier to create and maintain an application?",
+                    Answer = "inheritance"
+                },
+                new D_GameData()
+                {
+                    DataId = 4,
+                    GameId = 1,
+                    Difficulty = 1,
+                    Question = "What is defined as a syntactical contract that all the classes inheriting from it should follow?",
+                    Answer = "interface"
+                },
+                new D_GameData()
+                {
+                    DataId = 5,
+                    GameId = 1,
+                    Difficulty = 1,
+                    Question = "What is defined as the process of enclosing one or more items within a physical or logical package?",
+                    Answer = "encapsulation"
+                },
+                new D_GameData()
+                {
+                    DataId = 6,
+                    GameId = 1,
+                    Difficulty = 1,
+                    Question = "An enumeration is a set of named integer constants. An enumerated type is declared using what keyword?",
+                    Answer = "enum"
+                },
+                new D_GameData()
+                {
+                    DataId = 7,
+                    GameId = 1,
+                    Difficulty = 1,
+                    Question = "What color is the sky?",
+                    Answer = "blue"
                 }
             );
             modelBuilder.Entity<D_Review>().HasData(
