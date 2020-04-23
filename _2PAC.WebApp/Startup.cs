@@ -53,10 +53,11 @@ namespace _2PAC.WebApp
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowLocalAndAppServiceAngular", builder => builder
-                    .WithOrigins(
-                        "https://pac-clientwebapp.azurewebsites.net",
-                        "http://localhost:4200",
-                        "https://2pacwebapp.azurewebsites.net")
+                    // .WithOrigins(
+                    //     "https://pac-clientwebapp.azurewebsites.net",
+                    //     "http://localhost:4200",
+                    //     "https://2pacwebapp.azurewebsites.net")
+                    .AllowAnyOrigin()
                     .AllowAnyMethod()
                     .AllowAnyHeader());
             });

@@ -53,7 +53,7 @@ namespace _2PAC.WebApp
 TODO     client-side validation
 //      error handling on requests to APIs
 //      deployed to Azure App Service
-TODO     supports deep links
+//     supports deep links
 TODO     at least 50% of user stories must be fulfilled by the Angular app (but ideally all)
 //  ASP.NET Core REST service
 //      follow standard HTTP uniform interface, except hypermedia
@@ -65,7 +65,7 @@ TODO     at least 50% of user stories must be fulfilled by the Angular app (but 
 //      server-side validation
 TODO     support filtering or pagination on at least one resource
 //      logging
-TODO     implement hypermedia, or, implement an API Description Language, e.g. using Swashbuckle
+//     implement hypermedia, or, implement an API Description Language, e.g. using Swashbuckle
 TODO     (optional: implement a custom filter, health check, or middleware, e.g. exception-handling middleware)
 //  Azure Pipelines
 //     CI pipelines
@@ -81,7 +81,7 @@ TODO (optional: calls an external API, or integrates with some other service)
 !     Standup at least two or three times a week
 // any other tech you want within reason
 // the data model (how many tables, what kind of complex relationship like N to N) must be at least as complicated as project 1.
-TODO the user interaction model (what are the user stories, what inputs/interactions can the user make) must be at least as complicated as project 1.
+// the user interaction model (what are the user stories, what inputs/interactions can the user make) must be at least as complicated as project 1.
 // a project proposal
 //     MVP minimum viable product
 //     potentially stretch goals, extra features
