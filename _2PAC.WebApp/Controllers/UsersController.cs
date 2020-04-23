@@ -58,15 +58,22 @@ namespace _2PAC.WebApp.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<L_User>> GetById(int id)
         {
-            if (await _userRepository.GetUserById(id) is L_User user)
+            try
             {
-                string json = JsonSerializer.Serialize(user);
-                return new ContentResult
+                if (await _userRepository.GetUserById(id) is L_User user)
                 {
-                    StatusCode = 200,
-                    ContentType = "application/json",
-                    Content = json
-                };
+                    string json = JsonSerializer.Serialize(user);
+                    return new ContentResult
+                    {
+                        StatusCode = 200,
+                        ContentType = "application/json",
+                        Content = json
+                    };
+                }
+            }
+            catch (Exception)
+            {
+                return NotFound();
             }
             return NotFound();
         }

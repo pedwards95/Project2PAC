@@ -55,15 +55,22 @@ namespace _2PAC.WebApp.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<L_Review>> GetById(int id)
         {
-            if (await _reviewRepository.GetReviewById(id) is L_Review review)
+            try
             {
-                string json = JsonSerializer.Serialize(review);
-                return new ContentResult
+                if (await _reviewRepository.GetReviewById(id) is L_Review review)
                 {
-                    StatusCode = 200,
-                    ContentType = "application/json",
-                    Content = json
-                };
+                    string json = JsonSerializer.Serialize(review);
+                    return new ContentResult
+                    {
+                        StatusCode = 200,
+                        ContentType = "application/json",
+                        Content = json
+                    };
+                }
+            }
+            catch (Exception)
+            {
+                return NotFound();
             }
             return NotFound();
         }
