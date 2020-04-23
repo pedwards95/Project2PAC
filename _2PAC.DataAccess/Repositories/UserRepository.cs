@@ -92,6 +92,7 @@ namespace _2PAC.DataAccess.Repositories
             D_User entity = Mapper.UnMapUser(inputUser);
             entity.UserId = 0;
             _dbContext.Add(entity);
+            Save();
         }
         /// <summary> Deletes one user related to a user id.
         /// <param name="userId"> int (user id) </param>
@@ -107,6 +108,7 @@ namespace _2PAC.DataAccess.Repositories
                 return;
             }
             _dbContext.Remove(entity);
+            Save();
         }
         /// <summary> Changes all user related to a particular existing user.
         /// <param name="inputUser"> object L_User (name of object) - This is a logic object of type user. </param>
@@ -119,6 +121,7 @@ namespace _2PAC.DataAccess.Repositories
             D_User newEntity = Mapper.UnMapUser(inputUser);
 
             _dbContext.Entry(currentEntity).CurrentValues.SetValues(newEntity);
+            Save();
         }
 // ! RELATED TO OTHER CLASSES
 

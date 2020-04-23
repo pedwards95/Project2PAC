@@ -62,6 +62,7 @@ namespace _2PAC.DataAccess.Repositories
             D_Score entity = Mapper.UnMapScore(inputScore);
             entity.ScoreId = 0;
             _dbContext.Add(entity);
+            Save();
         }
         /// <summary> Deletes one score related to a score id.
         /// <param name="scoreId"> int (score id) </param>
@@ -80,6 +81,7 @@ namespace _2PAC.DataAccess.Repositories
                 return;
             }
             _dbContext.Remove(entity);
+            Save();
         }
         /// <summary> Changes all score related to a particular existing score.
         /// <param name="inputScore"> object L_Score (name of object) - This is a logic object of type Score. </param>
@@ -95,6 +97,7 @@ namespace _2PAC.DataAccess.Repositories
             D_Score newEntity = Mapper.UnMapScore(inputScore);
 
             _dbContext.Entry(currentEntity).CurrentValues.SetValues(newEntity);
+            Save();
         }
 // ! RELATED TO OTHER CLASSES
         /// <summary> Fetches all scores related to a particular game.
@@ -136,6 +139,7 @@ namespace _2PAC.DataAccess.Repositories
             {
                 _dbContext.Remove(val);
             }
+            Save();
         }
         /// <summary> Fetches all scores related to a particular user.
         /// <param name="userId"> int (user id) </param>
@@ -176,6 +180,7 @@ namespace _2PAC.DataAccess.Repositories
             {
                 _dbContext.Remove(val);
             }
+            Save();
         }
 // ! GENERAL COMMANDS
         /// <summary> Commit changes in the selected repository and related database.

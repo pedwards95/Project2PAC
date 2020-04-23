@@ -67,6 +67,7 @@ namespace _2PAC.DataAccess.Repositories
             D_Game entity = Mapper.UnMapGame(inputGame);
             entity.GameId = 0;
             _dbContext.Add(entity);
+            Save();
         }
         /// <summary> Deletes one game related to a game id.
         /// <param name="gameId"> int (game id) </param>
@@ -86,6 +87,7 @@ namespace _2PAC.DataAccess.Repositories
                 return;
             }
             _dbContext.Remove(entity);
+            Save();
         }
         /// <summary> Changes all game related to a particular existing game.
         /// <param name="inputGame"> object L_Game (name of object) - This is a logic object of type game. </param>
@@ -102,6 +104,7 @@ namespace _2PAC.DataAccess.Repositories
             D_Game newEntity = Mapper.UnMapGame(inputGame);
 
             _dbContext.Entry(currentEntity).CurrentValues.SetValues(newEntity);
+            Save();
         }
 // ! RELATED TO OTHER CLASSES
 

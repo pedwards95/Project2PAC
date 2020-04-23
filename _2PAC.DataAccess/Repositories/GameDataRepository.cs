@@ -63,6 +63,7 @@ namespace _2PAC.DataAccess.Repositories
             D_GameData entity = Mapper.UnMapGameData(inputGameData);
             entity.DataId = 0;
             _dbContext.Add(entity);
+            Save();
         }
         /// <summary> Deletes one game data related to a game data id.
         /// <param name="gameDataId"> int (game data id) </param>
@@ -80,6 +81,7 @@ namespace _2PAC.DataAccess.Repositories
                 return;
             }
             _dbContext.Remove(entity);
+            Save();
         }
         /// <summary> Changes all game data related to a particular existing game data.
         /// <param name="inputGameData"> object L_GameData (name of object) - This is a logic object of type game data. </param>
@@ -94,6 +96,7 @@ namespace _2PAC.DataAccess.Repositories
             D_GameData newEntity = Mapper.UnMapGameData(inputGameData);
 
             _dbContext.Entry(currentEntity).CurrentValues.SetValues(newEntity);
+            Save();
         }
 // ! RELATED TO OTHER CLASSES
         /// <summary> Fetches all game data related to a particular game.
@@ -131,6 +134,7 @@ namespace _2PAC.DataAccess.Repositories
             {
                 _dbContext.Remove(val);
             }
+            Save();
         }
 // ! GENERAL COMMANDS
         /// <summary> Commit changes in the selected repository and related database.

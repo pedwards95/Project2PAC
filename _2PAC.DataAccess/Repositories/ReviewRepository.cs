@@ -64,6 +64,7 @@ namespace _2PAC.DataAccess.Repositories
             D_Review entity = Mapper.UnMapReview(inputReview);
             entity.ReviewId = 0;
             _dbContext.Add(entity);
+            Save();
         }
         /// <summary> Deletes one review related to a review id.
         /// <param name="reviewId"> int (review id) </param>
@@ -82,6 +83,7 @@ namespace _2PAC.DataAccess.Repositories
                 return;
             }
             _dbContext.Remove(entity);
+            Save();
         }
         /// <summary> Changes all review related to a particular existing review.
         /// <param name="reviewData"> object L_Review (name of object) - This is a logic object of type review. </param>
@@ -97,6 +99,7 @@ namespace _2PAC.DataAccess.Repositories
             D_Review newEntity = Mapper.UnMapReview(inputReview);
 
             _dbContext.Entry(currentEntity).CurrentValues.SetValues(newEntity);
+            Save();
         }
 // ! RELATED TO OTHER CLASSES
         /// <summary> Fetches all reviews related to a particular game.
@@ -137,6 +140,7 @@ namespace _2PAC.DataAccess.Repositories
             {
                 _dbContext.Remove(val);
             }
+            Save();
         }
         /// <summary> Fetches all reviews related to a particular user.
         /// <param name="userId"> int (user id) </param>
@@ -175,6 +179,7 @@ namespace _2PAC.DataAccess.Repositories
             {
                 _dbContext.Remove(val);
             }
+            Save();
         }
 // ! GENERAL COMMANDS
         /// <summary> Commit changes in the selected repository and related database.

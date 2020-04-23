@@ -59,6 +59,7 @@ namespace _2PAC.DataAccess.Repositories
             D_Notice entity = Mapper.UnMapNotice(inputNotice);
             entity.NoticeId = 0;
             _dbContext.Add(entity);
+            Save();
         }
         /// <summary> Deletes one notice related to a notice id.
         /// <param name="noticeId"> int (notice id) </param>
@@ -74,6 +75,7 @@ namespace _2PAC.DataAccess.Repositories
                 return;
             }
             _dbContext.Remove(entity);
+            Save();
         }
         /// <summary> Changes all notice related to a particular existing notice.
         /// <param name="inputNotice"> object L_Notice (name of object) - This is a logic object of type notice. </param>
@@ -86,6 +88,7 @@ namespace _2PAC.DataAccess.Repositories
             D_Notice newEntity = Mapper.UnMapNotice(inputNotice);
 
             _dbContext.Entry(currentEntity).CurrentValues.SetValues(newEntity);
+            Save();
         }
 // ! RELATED TO OTHER CLASSES
 
