@@ -97,7 +97,6 @@ namespace _2PAC.WebApp.Controllers
             if (await _reviewRepository.GetReviewById(id) is L_Review oldReview)
             {
                 await _reviewRepository.UpdateReview(review);
-                //oldReview.ReviewId = review.ReviewId;
                 return NoContent();
                 //return StatusCode(204);
             }
