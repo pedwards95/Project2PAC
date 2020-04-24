@@ -89,7 +89,7 @@ namespace _2PAC.WebApp.Controllers
             // successful update for PUT returns 204 No Content with empty body, or 200 OK
             if (await _scoreRepository.GetScoreById(id) is L_Score oldScore)
             {
-                oldScore.ScoreId = score.ScoreId;
+                await _scoreRepository.UpdateScore(score);
                 return NoContent();
                 //return StatusCode(204);
             }

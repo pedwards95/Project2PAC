@@ -96,7 +96,8 @@ namespace _2PAC.WebApp.Controllers
             // successful update for PUT returns 204 No Content with empty body, or 200 OK
             if (await _reviewRepository.GetReviewById(id) is L_Review oldReview)
             {
-                oldReview.ReviewId = review.ReviewId;
+                await _reviewRepository.UpdateReview(review);
+                //oldReview.ReviewId = review.ReviewId;
                 return NoContent();
                 //return StatusCode(204);
             }

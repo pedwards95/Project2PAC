@@ -100,13 +100,7 @@ namespace _2PAC.WebApp.Controllers
             // successful update for PUT returns 204 No Content with empty body, or 200 OK
             if (await _userRepository.GetUserById(id) is L_User oldUser)
             {
-                oldUser.PictureId = user.PictureId;
-                oldUser.Admin = user.Admin;
-                oldUser.Description = user.Description;
-                oldUser.FirstName = user.FirstName;
-                oldUser.LastName = user.LastName;
-                oldUser.Password = user.Password;
-                oldUser.Username = user.Username;
+                await _userRepository.UpdateUser(user);
                 return NoContent();
                 //return StatusCode(204);
             }

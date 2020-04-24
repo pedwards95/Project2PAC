@@ -89,7 +89,7 @@ namespace _2PAC.WebApp.Controllers
             // successful update for PUT returns 204 No Content with empty body, or 200 OK
             if (await _noticeRepository.GetNoticeById(id) is L_Notice oldNotice)
             {
-                oldNotice.NoticeId = notice.NoticeId;
+                await _noticeRepository.UpdateNotice(notice);
                 return NoContent();
                 //return StatusCode(204);
             }

@@ -89,7 +89,7 @@ namespace _2PAC.WebApp.Controllers
             // successful update for PUT returns 204 No Content with empty body, or 200 OK
             if (await _gameDataRepository.GetGameDataById(id) is L_GameData oldGameData)
             {
-                oldGameData.DataId = gameData.DataId;
+                await _gameDataRepository.UpdateGameData(gameData);
                 return NoContent();
                 //return StatusCode(204);
             }
