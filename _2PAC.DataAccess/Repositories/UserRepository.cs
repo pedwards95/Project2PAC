@@ -68,7 +68,6 @@ namespace _2PAC.DataAccess.Repositories
                 .Include(p => p.Reviews)
                 .ThenInclude(p => p.Game)
                 .Where(p => (p.FirstName.ToLower().Contains(userString.ToLower())
-                    || p.FirstName.ToLower().Contains(userString.ToLower())
                     || p.LastName.ToLower().Contains(userString.ToLower())
                     || p.Username.ToLower().Contains(userString.ToLower())
                     ))
