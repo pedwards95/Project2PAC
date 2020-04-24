@@ -56,6 +56,30 @@ namespace _2PAC.DataAccess.Repositories
             }
             return Mapper.MapUser(returnUser);
         }
+        /// <summary> Fetches one user related to its strings.
+        /// <param name="userString"> string (user string names) </param>
+        /// <returns> An array of users related to input string </returns>
+        /// </summary>
+        public async Task<List<L_User>> GetUserByString(string userString)
+        {
+            _logger.LogInformation($"Retrieving user with string: {userString}");
+            List<D_User> returnUser = await _dbContext.Users
+                .Include(p => p.Scores)
+                .Include(p => p.Reviews)
+                .ThenInclude(p => p.Game)
+                .Where(p => (p.FirstName.ToLower().Contains(userString.ToLower())
+                    || p.FirstName.ToLower().Contains(userString.ToLower())
+                    || p.LastName.ToLower().Contains(userString.ToLower())
+                    || p.Username.ToLower().Contains(userString.ToLower())
+                    ))
+                .ToListAsync();
+            if(returnUser == null)
+            {
+                _logger.LogInformation($"No users with string: {userString} found!");
+                return new List<L_User>{};
+            }
+            return returnUser.Select(Mapper.MapUser).ToList();
+        }
         /// <summary> Fetches one user related to its username.
         /// <param name="username"> string (users username) </param>
         /// <returns> A single user related to input username </returns>

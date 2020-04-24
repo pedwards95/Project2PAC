@@ -17,6 +17,11 @@ namespace _2PAC.Domain.Interfaces
         /// <returns> A single user related to input id </returns>
         /// </summary>
         Task<L_User> GetUserById(int userId);
+        /// <summary> Fetches one user related to its strings.
+        /// <param name="userString"> string (user string names) </param>
+        /// <returns> An array of users related to input string </returns>
+        /// </summary>
+        Task<List<L_User>> GetUserByString(string userString);
         /// <summary> Fetches one user related to its username.
         /// <param name="username"> string (users username) </param>
         /// <returns> A single user related to input username </returns>

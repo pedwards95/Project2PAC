@@ -42,13 +42,10 @@ namespace _2PAC.WebApp.Controllers
             if (search == null)
             {
                 List<L_User> usersAll = await _userRepository.GetAllUsers();
-                string json = JsonSerializer.Serialize(usersAll);
                 return Ok(usersAll);
             }
-            // TODO:
-            throw new NotImplementedException();
-            //L_User user = _userRepository.
-            //return Ok(user);
+            List<L_User> users = await _userRepository.GetUserByString(search);
+            return Ok(users);
         }
 
         // GET: api/users/5
