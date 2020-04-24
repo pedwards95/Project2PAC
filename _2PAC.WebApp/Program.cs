@@ -50,7 +50,7 @@ namespace _2PAC.WebApp
 
 /*
 //  Angular single-page application
-TODO     client-side validation
+//~    client-side validation
 //      error handling on requests to APIs
 //      deployed to Azure App Service
 //     supports deep links
@@ -63,7 +63,7 @@ TODO     at least 50% of user stories must be fulfilled by the Angular app (but 
 //         DB should be on the cloud
 //          all DB/network access should be async
 //      server-side validation
-TODO     support filtering or pagination on at least one resource
+//     support filtering or pagination on at least one resource
 //      logging
 //     implement hypermedia, or, implement an API Description Language, e.g. using Swashbuckle
 TODO     (optional: implement a custom filter, health check, or middleware, e.g. exception-handling middleware)
@@ -80,7 +80,7 @@ TODO (optional: calls an external API, or integrates with some other service)
 //      Project board to track user stories across team. (no requirements on how detailed)
 !     Standup at least two or three times a week
 // any other tech you want within reason
-// the data model (how many tables, what kind of complex relationship like N to N) must be at least as complicated as project 1.
+// the data model (how ma~ny tables, what kind of complex relationship like N to N) must be at least as complicated as project 1.
 // the user interaction model (what are the user stories, what inputs/interactions can the user make) must be at least as complicated as project 1.
 // a project proposal
 //     MVP minimum viable product
